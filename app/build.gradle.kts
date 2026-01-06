@@ -7,14 +7,16 @@ plugins {
     alias(libs.plugins.hilt.android)
 }
 
+// 【修正】36 (Preview) から 35 (Stable) に変更してCIを安定させます
 android {
     namespace = "com.gadgeski.bugcodex"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.gadgeski.bugcodex"
         minSdk = 34
-        targetSdk = 36
+        // 【修正】ここも 35 に合わせます
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
