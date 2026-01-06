@@ -1,5 +1,5 @@
 ```
-bugmemo/
+BugCodex/
 ├── Readme.md
 ├── STRUCTURE.md
 ├── app
@@ -11,6 +11,8 @@ bugmemo/
 │   │   │   ├── 2.json
 │   │   │   ├── 3.json
 │   │   │   └── 4.json
+│   │   ├── com.gadgeski.bugcodex.data.db.AppDatabase
+│   │   │   └── 4.json
 │   │   └── com.gadgeski.bugmemo.data.db.AppDatabase
 │   │       └── 4.json
 │   └── src
@@ -18,7 +20,7 @@ bugmemo/
 │       │   └── java
 │       │       └── com
 │       │           └── gadgeski
-│       │               └── bugmemo
+│       │               └── bugcodex
 │       │                   ├── ExampleInstrumentedTest.kt
 │       │                   └── data
 │       │                       ├── RoomNotesRepositoryTest.kt
@@ -30,8 +32,8 @@ bugmemo/
 │       │   ├── java
 │       │   │   └── com
 │       │   │       └── gadgeski
-│       │   │           └── bugmemo
-│       │   │               ├── BugMemoApp.kt
+│       │   │           └── bugcodex
+│       │   │               ├── BugCodexApp.kt
 │       │   │               ├── MainActivity.kt
 │       │   │               ├── core
 │       │   │               │   ├── AppLocaleManager.kt
@@ -86,13 +88,13 @@ bugmemo/
 │       │   │                   │   └── Type.kt
 │       │   │                   └── utils
 │       │   │                       ├── GistContentBuilder.kt
+│       │   │                       ├── HingeSensor.kt
 │       │   │                       ├── IcebergEditorVisualTransformation.kt
 │       │   │                       └── MarkdownTextHelper.kt
 │       │   └── res
 │       │       ├── drawable
 │       │       │   ├── ic_launcher_background.xml
 │       │       │   └── ic_launcher_foreground.xml
-│       │       ├── mipmap-anydpi
 │       │       ├── mipmap-anydpi-v26
 │       │       │   ├── ic_launcher.xml
 │       │       │   └── ic_launcher_round.xml
@@ -130,7 +132,7 @@ bugmemo/
 │           └── java
 │               └── com
 │                   └── gadgeski
-│                       └── bugmemo
+│                       └── bugcodex
 │                           ├── ExampleUnitTest.kt
 │                           ├── data
 │                           │   ├── FakeNotesRepository.kt
@@ -168,5 +170,5 @@ bugmemo/
 ├── local.properties
 └── settings.gradle.kts
 
-59 directories, 109 files
+59 directories, 111 files
 ```
