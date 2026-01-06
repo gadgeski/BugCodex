@@ -21,7 +21,7 @@ import com.gadgeski.bugcodex.ui.screens.NoteEditorScreen
 @Composable
 fun TwoPaneNoteEditor(
     vm: NotesViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier.fillMaxSize()) {
         // 左ペイン: ノート一覧
@@ -31,7 +31,7 @@ fun TwoPaneNoteEditor(
                 // 2ペインモードでは、リスト項目をクリックしても画面遷移せず、
                 // ViewModel内の「選択中ノート」を更新するだけで右側に反映されます。
                 // そのため、onOpenEditor は空（またはフォーカス移動のみ）でOKです。
-                onOpenEditor = { /* 右側のエディタがReactiveに更新されるので何もしない */ }
+                onOpenEditor = { /* 右側のエディタがReactiveに更新されるので何もしない */ },
             )
         }
 
@@ -40,7 +40,7 @@ fun TwoPaneNoteEditor(
             modifier = Modifier
                 .width(1.dp)
                 .fillMaxHeight(),
-            color = MaterialTheme.colorScheme.outlineVariant
+            color = MaterialTheme.colorScheme.outlineVariant,
         )
 
         // 右ペイン: エディタ
@@ -49,7 +49,7 @@ fun TwoPaneNoteEditor(
                 vm = vm,
                 // 2ペインモードでは「戻る」概念がない（常に横にある）ため、
                 // onBack は空でOK、あるいは選択解除処理にします。
-                onBack = { /* 必要なら選択解除 */ }
+                onBack = { /* 必要なら選択解除 */ },
             )
         }
     }

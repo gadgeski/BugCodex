@@ -105,7 +105,7 @@ fun AppNavHost(
             if (isBookMode) {
                 TwoPaneNoteEditor(
                     vm = vm,
-                    modifier = Modifier
+                    modifier = Modifier,
                 )
             } else {
                 // 通常時 (スマホ/全開) はリストを表示し、タップで遷移

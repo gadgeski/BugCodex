@@ -1,3 +1,6 @@
+// 【修正】ファイル名とクラス名が一致しないことに対するKtLintの警告を抑制します
+@file:Suppress("ktlint:standard:filename")
+
 package com.gadgeski.bugcodex.util
 
 import android.app.Activity
@@ -17,7 +20,7 @@ import androidx.window.layout.WindowInfoTracker
 enum class HingePosture {
     FLAT,
     BOOK_MODE,
-    TABLETOP_MODE
+    TABLETOP_MODE,
 }
 
 /**
@@ -41,7 +44,8 @@ fun rememberHingePosture(): State<HingePosture> {
                 value = if (foldingFeature != null && foldingFeature.state == FoldingFeature.State.HALF_OPENED) {
                     // ヒンジの向きでモードを分岐
                     if (foldingFeature.orientation == FoldingFeature.Orientation.VERTICAL) {
-                        HingePosture.BOOK_MODE // BugCodexではここが重要（リスト・詳細分割）
+                        HingePosture.BOOK_MODE
+                        // BugCodexではここが重要（リスト・詳細分割）
                     } else {
                         HingePosture.TABLETOP_MODE
                     }

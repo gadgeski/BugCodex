@@ -1,39 +1,38 @@
 // <project-root>/build.gradle.kts
 
 plugins {
+    // libs.versions.toml の定義に合わせてエイリアスを修正
+    // キーが "android-application" なので、アクセサは "android.application" になります
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
+
+    // Hilt (libs.plugins.hilt.android)
+    alias(libs.plugins.hilt.android) apply false
+
+    // KSP (定義があったので有効化)
     alias(libs.plugins.ksp) apply false
 
-    // ★ Added: Hilt Plugin の定義 (apply false でルートに登録)
-    // アプリ側と同じバージョン "2.51.1" を指定しておきます。
-    // バージョンカタログ(libs.plugins.hilt)がある場合は alias(...) に置き換えてください。
-    id("com.google.dagger.hilt.android") version "2.57.2" apply false
-
+    // Spotless (コード整形)
+    // ルートプロジェクトで設定ブロックを実行するため、apply false を付けずに適用します
     alias(libs.plugins.spotless)
 }
 
+// Spotlessの設定（復活）
 spotless {
     kotlin {
         target("**/*.kt")
         targetExclude("**/build/**", ".gradle/**", "**/.gradle/**", "**/generated/**")
-
-        // ★ Fixed: editorConfigOverride を ktlint() にチェーン
         ktlint()
             .editorConfigOverride(
                 mapOf(
-                    // @Composable / @Preview の PascalCase を許容
                     "ktlint_function_naming_ignore_when_annotated_with" to "Composable,Preview",
                 ),
             )
     }
-
     kotlinGradle {
         target("**/*.gradle.kts")
         targetExclude("**/build/**", ".gradle/**", "**/.gradle/**")
-
-        // ★ Fixed: こちらもチェーンで指定
         ktlint()
             .editorConfigOverride(
                 mapOf(
@@ -41,7 +40,6 @@ spotless {
                 ),
             )
     }
-
     format("misc") {
         target("**/*.md", "**/*.yml", "**/*.yaml", "**/.gitignore")
         targetExclude("**/build/**", ".gradle/**", "**/.gradle/**")
