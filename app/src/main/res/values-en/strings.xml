@@ -2,11 +2,11 @@
 <resources>
 
     <!-- App Name -->
-    <string name="app_name">Bug Memo</string>
+    <string name="app_name">Bug Codex</string>
 
     <!-- Screen Title -->
-    <string name="title_bugmemo_with_label">Bug Memo — %1$s</string>
-    <string name="title_bugmemo">Bug Memo</string>
+    <string name="title_bugcodex_with_label">Bug Memo — %1$s</string>
+    <string name="title_bugcodex">Bug Codex</string>
 
     <!-- Actions/Buttons -->
     <string name="action_folders">Folder</string> <!-- Fix: Removed extra > -->

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- ★ Fix: ライブラリを追加したので Theme.Material3 が正しく解決されます -->
-    <style name="Theme.Bugmemo" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.BugCodex" parent="Theme.Material3.DayNight.NoActionBar">
 
         <!-- ステータスバーを透明にする -->
         <item name="android:statusBarColor">@android:color/transparent</item>

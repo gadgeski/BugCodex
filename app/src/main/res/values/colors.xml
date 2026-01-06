@@ -10,32 +10,32 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- BugMemo カスタムカラーパレット（落ち着いたオレンジ系） -->
-    <color name="bugmemo_orange">#FFD84315</color>           <!-- メインオレンジ -->
-    <color name="bugmemo_orange_light">#FFFF7043</color>     <!-- ライトオレンジ -->
-    <color name="bugmemo_orange_dark">#FFBF360C</color>      <!-- ダークオレンジ -->
-    <color name="bugmemo_accent">#FFFF9800</color>           <!-- アクセントオレンジ -->
-    <color name="bugmemo_background">#FFFFF8F5</color>       <!-- 暖かみのある背景 -->
-    <color name="bugmemo_surface">#FFFFFBFA</color>          <!-- サーフェス色 -->
+    <color name="bugcodex_orange">#FFD84315</color>           <!-- メインオレンジ -->
+    <color name="bugcodex_orange_light">#FFFF7043</color>     <!-- ライトオレンジ -->
+    <color name="bugcodex_orange_dark">#FFBF360C</color>      <!-- ダークオレンジ -->
+    <color name="bugcodex_accent">#FFFF9800</color>           <!-- アクセントオレンジ -->
+    <color name="bugcodex_background">#FFFFF8F5</color>       <!-- 暖かみのある背景 -->
+    <color name="bugcodex_surface">#FFFFFBFA</color>          <!-- サーフェス色 -->
 
     <!-- テキストカラー -->
-    <color name="bugmemo_on_primary">#FFFFFFFF</color>       <!-- プライマリー上のテキスト -->
-    <color name="bugmemo_on_surface">#FF1C1B1F</color>       <!-- サーフェス上のテキスト -->
-    <color name="bugmemo_text_secondary">#FF757575</color>    <!-- セカンダリーテキスト -->
+    <color name="bugcodex_on_primary">#FFFFFFFF</color>       <!-- プライマリー上のテキスト -->
+    <color name="bugcodex_on_surface">#FF1C1B1F</color>       <!-- サーフェス上のテキスト -->
+    <color name="bugcodex_text_secondary">#FF757575</color>    <!-- セカンダリーテキスト -->
 
     <!-- 状態カラー -->
-    <color name="bugmemo_error">#FFBA1A1A</color>            <!-- エラー色 -->
-    <color name="bugmemo_success">#FF2E7D32</color>          <!-- 成功色 -->
-    <color name="bugmemo_warning">#FFF57C00</color>          <!-- 警告色 -->
+    <color name="bugcodex_error">#FFBA1A1A</color>            <!-- エラー色 -->
+    <color name="bugcodex_success">#FF2E7D32</color>          <!-- 成功色 -->
+    <color name="bugcodex_warning">#FFF57C00</color>          <!-- 警告色 -->
 
     <!-- グレースケール -->
-    <color name="bugmemo_gray_50">#FFFAFAFA</color>
-    <color name="bugmemo_gray_100">#FFF5F5F5</color>
-    <color name="bugmemo_gray_200">#FFEEEEEE</color>
-    <color name="bugmemo_gray_300">#FFE0E0E0</color>
-    <color name="bugmemo_gray_400">#FFBDBDBD</color>
-    <color name="bugmemo_gray_500">#FF9E9E9E</color>
-    <color name="bugmemo_gray_600">#FF757575</color>
-    <color name="bugmemo_gray_700">#FF616161</color>
-    <color name="bugmemo_gray_800">#FF424242</color>
-    <color name="bugmemo_gray_900">#FF212121</color>
+    <color name="bugcodex_gray_50">#FFFAFAFA</color>
+    <color name="bugcodex_gray_100">#FFF5F5F5</color>
+    <color name="bugcodex_gray_200">#FFEEEEEE</color>
+    <color name="bugcodex_gray_300">#FFE0E0E0</color>
+    <color name="bugcodex_gray_400">#FFBDBDBD</color>
+    <color name="bugcodex_gray_500">#FF9E9E9E</color>
+    <color name="bugcodex_gray_600">#FF757575</color>
+    <color name="bugcodex_gray_700">#FF616161</color>
+    <color name="bugcodex_gray_800">#FF424242</color>
+    <color name="bugcodex_gray_900">#FF212121</color>
 </resources>

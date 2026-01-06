@@ -34,5 +34,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "bugmemo" // ★ ここは任意
+rootProject.name = "BugCodex" // ★ ここは任意
 include(":app") // ★ 必須：app モジュールを含める
