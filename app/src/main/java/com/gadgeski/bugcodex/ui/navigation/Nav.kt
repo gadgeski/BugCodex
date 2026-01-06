@@ -1,6 +1,7 @@
 package com.gadgeski.bugcodex.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -8,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.gadgeski.bugcodex.ui.NotesViewModel
+import com.gadgeski.bugcodex.ui.components.TwoPaneNoteEditor
 import com.gadgeski.bugcodex.ui.mindmap.MindMapViewModel
 import com.gadgeski.bugcodex.ui.screens.AllNotesScreen
 import com.gadgeski.bugcodex.ui.screens.BugsScreen
@@ -16,6 +18,8 @@ import com.gadgeski.bugcodex.ui.screens.MindMapScreen
 import com.gadgeski.bugcodex.ui.screens.NoteEditorScreen
 import com.gadgeski.bugcodex.ui.screens.SearchScreen
 import com.gadgeski.bugcodex.ui.screens.SettingsScreen
+import com.gadgeski.bugcodex.util.HingePosture
+import com.gadgeski.bugcodex.util.rememberHingePosture
 
 // keep: ルート定義
 object Routes {
@@ -34,6 +38,10 @@ fun AppNavHost(
     navController: NavHostController,
     vm: NotesViewModel,
 ) {
+    // Foldableの状態を監視
+    val hingePosture by rememberHingePosture()
+    val isBookMode = hingePosture == HingePosture.BOOK_MODE
+
     NavHost(
         navController = navController,
         startDestination = Routes.ALL_NOTES,
@@ -93,10 +101,19 @@ fun AppNavHost(
         }
         // ALL_NOTES (Home)
         composable(Routes.ALL_NOTES) {
-            AllNotesScreen(
-                vm = vm,
-                onOpenEditor = { navController.navigate(Routes.EDITOR) },
-            )
+            // Fold対応: Book Mode (半開き) なら2画面エディタを表示
+            if (isBookMode) {
+                TwoPaneNoteEditor(
+                    vm = vm,
+                    modifier = Modifier
+                )
+            } else {
+                // 通常時 (スマホ/全開) はリストを表示し、タップで遷移
+                AllNotesScreen(
+                    vm = vm,
+                    onOpenEditor = { navController.navigate(Routes.EDITOR) },
+                )
+            }
         }
     }
 }

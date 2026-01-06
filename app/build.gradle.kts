@@ -108,6 +108,9 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
+    // WindowManager
+    implementation(libs.androidx.window)
+
     // Networking (Retrofit / Moshi / OkHttp)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.moshi)
