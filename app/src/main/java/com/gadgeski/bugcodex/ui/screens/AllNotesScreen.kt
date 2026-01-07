@@ -78,8 +78,9 @@ import com.gadgeski.bugcodex.ui.theme.IceSilver
 import com.gadgeski.bugcodex.ui.theme.IceSlate
 import com.gadgeski.bugcodex.ui.theme.IceTextPrimary
 import com.gadgeski.bugcodex.ui.theme.IceTextSecondary
-// 【追加】Orbitronフォントを使用するためにインポート
 import com.gadgeski.bugcodex.ui.theme.Orbitron
+
+// 【追加】Orbitronフォントを使用するためにインポート(import com.gadgeski.bugcodex.ui.theme.Orbitron)
 
 @Composable
 fun AllNotesScreen(
@@ -171,11 +172,11 @@ fun AllNotesScreen(
                                 fontSize = bugFontSize,
                                 lineHeight = bugFontSize * 0.9,
                                 platformStyle = PlatformTextStyle(includeFontPadding = false),
-                                letterSpacing = 2.sp
+                                letterSpacing = 2.sp,
                             ),
                             color = IceTextPrimary.copy(alpha = 0.8f),
                             maxLines = 1,
-                            softWrap = false
+                            softWrap = false,
                         )
                         // 【修正】TRACKER部分のみフォントをOrbitronに変更し、視認性とデザインバランスを向上
                         Text(
@@ -186,12 +187,12 @@ fun AllNotesScreen(
                                 platformStyle = PlatformTextStyle(includeFontPadding = false),
                                 letterSpacing = 0.sp,
                                 fontFamily = Orbitron, // ここを変更: BBH Bartle -> Orbitron
-                                fontWeight = FontWeight.SemiBold // 少し太めにしてバランスを取る
+                                fontWeight = FontWeight.SemiBold, // 少し太めにしてバランスを取る
                             ),
                             color = IceTextPrimary.copy(alpha = 0.8f),
                             modifier = Modifier.offset(y = (-4).dp),
                             maxLines = 1,
-                            softWrap = false
+                            softWrap = false,
                         )
                     }
                 }
@@ -263,13 +264,13 @@ fun AllNotesScreen(
                         if (error != null) {
                             Column(
                                 Modifier.fillMaxWidth().padding(16.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
                                 Text("読み込みに失敗しました", color = IceTextSecondary)
                                 Spacer(Modifier.height(8.dp))
                                 Button(
                                     onClick = { notesPaging.retry() },
-                                    colors = ButtonDefaults.buttonColors(containerColor = IceGlassSurface)
+                                    colors = ButtonDefaults.buttonColors(containerColor = IceGlassSurface),
                                 ) {
                                     Text("リトライ", color = IceCyan)
                                 }
@@ -280,12 +281,12 @@ fun AllNotesScreen(
                     // 空状態
                     item {
                         val isEmpty = (notesPaging.loadState.refresh is LoadState.NotLoading) &&
-                                notesPaging.itemCount == 0
+                            notesPaging.itemCount == 0
 
                         if (isEmpty) {
                             Column(
                                 Modifier.fillMaxWidth().padding(top = 32.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
                                 Text("NO DATA FOUND", style = MaterialTheme.typography.titleMedium, color = IceTextPrimary)
                                 Spacer(Modifier.height(8.dp))
