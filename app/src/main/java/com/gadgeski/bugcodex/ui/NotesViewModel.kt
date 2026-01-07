@@ -39,8 +39,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-// ★追加(com.example.bugcodex.ui.utils.GistContentBuilder)
-
 @HiltViewModel
 class NotesViewModel @Inject constructor(
     private val repo: NotesRepository,
@@ -113,6 +111,7 @@ class NotesViewModel @Inject constructor(
     val folders: StateFlow<List<Folder>> =
         repo.observeFolders().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
+    // 編集中のノート（右ペインに表示されるノート）
     private val _editing = MutableStateFlow<Note?>(null)
     val editing: StateFlow<Note?> = _editing.asStateFlow()
 
@@ -124,6 +123,7 @@ class NotesViewModel @Inject constructor(
         val autoTitle = sharedText.trim().lineSequence().firstOrNull()?.take(30) ?: "Shared Note"
         setEditingTitle(if (sharedText.length > 30) "$autoTitle..." else autoTitle)
 
+        // 2ペインモードの場合はナビゲーション不要だが、イベントは発行しておく（UI側で無視すれば良い）
         sendEvent(UiEvent.NavigateToEditor)
     }
 
@@ -237,7 +237,7 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    // 編集中のノートを個別に同期（NoteEditorScreenから利用）
+    // 編集中のノートを個別に同期
     fun syncCurrentNoteToGist() {
         val note = _editing.value ?: return
         val token = settings.githubToken.value.trim()
@@ -250,7 +250,6 @@ class NotesViewModel @Inject constructor(
             sendEvent(UiEvent.Message("Syncing to Gist..."))
             runCatching {
                 withContext(Dispatchers.IO) {
-                    // ★ FIX: ロジックをGistContentBuilderに移譲
                     val files = GistContentBuilder.buildSingleFileMap(note)
                     val description = GistContentBuilder.buildSyncDescription(isFullSync = false, title = note.title)
 
@@ -260,7 +259,6 @@ class NotesViewModel @Inject constructor(
                         files = files,
                     )
 
-                    // 既存IDがあれば更新、なければ新規作成
                     val response = if (note.gistId == null) {
                         gistService.createGist("token $token", request)
                     } else {
@@ -289,7 +287,7 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    // 全件同期メソッド（AllNotesScreenから利用）
+    // 全件同期
     fun syncToGist() {
         val token = settings.githubToken.value.trim()
         if (token.isBlank()) {
@@ -302,8 +300,6 @@ class NotesViewModel @Inject constructor(
             runCatching {
                 withContext(Dispatchers.IO) {
                     val allNotes = repo.observeNotes().first()
-
-                    // ★ FIX: ロジックをGistContentBuilderに移譲
                     val files = GistContentBuilder.buildBatchFileMap(allNotes)
                     val description = GistContentBuilder.buildSyncDescription(isFullSync = true)
 

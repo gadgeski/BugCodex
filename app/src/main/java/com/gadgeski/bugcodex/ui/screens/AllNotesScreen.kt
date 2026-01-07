@@ -54,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.gadgeski.bugcodex.data.Note
@@ -75,6 +76,9 @@ fun AllNotesScreen(
 ) {
     val notesPaging: LazyPagingItems<Note> = vm.pagedNotes.collectAsLazyPagingItems()
 
+    // 【追加】現在選択中（編集中）のノートを監視して、リストのハイライトに使用します
+    val editingNote by vm.editing.collectAsStateWithLifecycle()
+
     val backgroundBrush = remember {
         Brush.verticalGradient(
             colors = listOf(IceHorizon, IceSlate, IceDeepNavy),
@@ -89,17 +93,15 @@ fun AllNotesScreen(
         Scaffold(
             containerColor = Color.Transparent,
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            // ★ Added: TopAppBarを追加してSyncボタンを配置
             topBar = {
                 TopAppBar(
                     title = { /* タイトルは本文中の BUG TRACKER に任せるので空 */ },
                     actions = {
-                        // ★ Gist Sync Button
                         IconButton(onClick = { vm.syncToGist() }) {
                             Icon(
                                 imageVector = Icons.Filled.CloudUpload,
                                 contentDescription = "Sync to Gist",
-                                tint = IceCyan, // シアンで発光させる
+                                tint = IceCyan,
                             )
                         }
                     },
@@ -135,7 +137,6 @@ fun AllNotesScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp),
                 ) {
-                    // TopBar分の余白はScaffoldがpaddingに入れてくれるので、追加のSpacerは少し調整
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "BUG\nTRACKER",
@@ -166,8 +167,10 @@ fun AllNotesScreen(
                     ) { index ->
                         val note = notesPaging[index]
                         if (note != null) {
+                            val isSelected = note.id == editingNote?.id
                             TechGlassCard(
                                 note = note,
+                                isSelected = isSelected, // 【追加】選択状態を渡す
                                 onClick = {
                                     vm.loadNote(note.id)
                                     onOpenEditor()
@@ -187,20 +190,25 @@ fun AllNotesScreen(
 @Composable
 private fun TechGlassCard(
     note: Note,
+    isSelected: Boolean, // 【追加】
     onClick: () -> Unit,
     onToggleStar: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
+    // 選択中は枠線をシアンに発光させる
+    val targetBorderColor = if (isSelected || isPressed) IceCyan else IceGlassBorder
     val animatedBorderColor by animateColorAsState(
-        targetValue = if (isPressed) IceCyan else IceGlassBorder,
+        targetValue = targetBorderColor,
         label = "borderGlow",
         animationSpec = tween(durationMillis = 150),
     )
 
+    // 選択中は背景も少し明るくする
+    val targetContainerColor = if (isSelected || isPressed) IceGlassSurface.copy(alpha = 0.4f) else IceGlassSurface
     val animatedContainerColor by animateColorAsState(
-        targetValue = if (isPressed) IceGlassSurface.copy(alpha = 0.25f) else IceGlassSurface,
+        targetValue = targetContainerColor,
         label = "containerGlow",
         animationSpec = tween(durationMillis = 150),
     )
@@ -229,7 +237,8 @@ private fun TechGlassCard(
                 Text(
                     text = note.title.ifBlank { "UNTITLED_LOG" },
                     style = MaterialTheme.typography.titleMedium,
-                    color = IceTextPrimary,
+                    // 選択中は文字色もシアンに寄せる
+                    color = if (isSelected) IceCyan else IceTextPrimary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )

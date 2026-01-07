@@ -43,10 +43,8 @@ private val LightColorScheme = lightColorScheme(
 fun BugCodexTheme(
     darkTheme: Boolean = true,
     // ★ 強制的にダークモード（世界観重視）
-    // ★ Changed: dynamicColor 引数を削除（未使用のため）
     content: @Composable () -> Unit,
 ) {
-    // ★ Changed: context 変数を削除（未使用のため）
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     val view = LocalView.current
@@ -62,8 +60,8 @@ fun BugCodexTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = AppTypography,
-        // ★ Tech-Monoフォント適用
+        // 【修正】AppTypography ではなく、Type.kt で定義した Typography を使用
+        typography = Typography,
         content = content,
     )
 }

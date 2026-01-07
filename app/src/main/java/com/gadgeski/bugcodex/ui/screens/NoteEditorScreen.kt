@@ -92,8 +92,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import java.io.File
 import java.util.UUID
 
-// ★変更: TabRow -> PrimaryTabRow(androidx.compose.material3.PrimaryTabRow)
-
 private enum class EditorTabMode { Edit, Preview }
 
 @OptIn(FlowPreview::class)
@@ -101,21 +99,17 @@ private enum class EditorTabMode { Edit, Preview }
 fun NoteEditorScreen(
     vm: NotesViewModel,
     onBack: () -> Unit = {},
+    // 【追加】戻るボタンを表示するかどうか（2ペイン時は false にする）
+    showBackButton: Boolean = true,
 ) {
     val editing by vm.editing.collectAsStateWithLifecycle(initialValue = null)
-    // 警告 "Condition 'enabled' is always true" が出る場合、editingがnullにならない型推論がされている可能性があります。
-    // ロジック的には安全のため != null チェックを残しても問題ありませんが、
-    // ここでは警告を抑制するため、また enabled 変数はUI制御で使われているためそのままにします。
     val enabled = editing != null
 
     val context = LocalContext.current
     val fontScale by AppLocaleManager.editorFontScaleFlow(context)
         .collectAsStateWithLifecycle(initialValue = 1.0f)
 
-    // IDE誤検知回避：by委譲を使わずStateオブジェクトを保持
     val showDeleteDialogState = remember { mutableStateOf(false) }
-
-    // タブ状態
     val tabModeState = remember { mutableStateOf(EditorTabMode.Edit) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -127,7 +121,6 @@ fun NoteEditorScreen(
         }
     }
 
-    // IDE誤検知回避：Stateオブジェクト保持
     val contentFieldState = remember(editing?.id) {
         mutableStateOf(
             TextFieldValue(
@@ -238,11 +231,14 @@ fun NoteEditorScreen(
                             navigationIconContentColor = IceCyan,
                         ),
                         navigationIcon = {
-                            IconButton(onClick = onBack) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = stringResource(R.string.cd_back),
-                                )
+                            // 【修正】showBackButton が true の時だけ戻るボタンを表示
+                            if (showBackButton) {
+                                IconButton(onClick = onBack) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = stringResource(R.string.cd_back),
+                                    )
+                                }
                             }
                         },
                         actions = {
@@ -278,15 +274,12 @@ fun NoteEditorScreen(
                         },
                     )
 
-                    // --- Edit / Preview タブ ---
                     val selectedIndex = if (tabModeState.value == EditorTabMode.Edit) 0 else 1
 
-                    // ★FIX: TabRow -> PrimaryTabRow に変更
                     PrimaryTabRow(
                         selectedTabIndex = selectedIndex,
                         containerColor = Color.Transparent,
                         contentColor = IceCyan,
-                        // dividerはデフォルトで適切に処理されるため削除、indicatorもデフォルトを使用
                     ) {
                         Tab(
                             selected = selectedIndex == 0,
@@ -323,7 +316,6 @@ fun NoteEditorScreen(
                     .padding(inner)
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
-                    // .verticalScroll(rememberScrollState()) ← previewでもスクロール出来る様に外す。
                     .imePadding(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
@@ -389,7 +381,6 @@ fun NoteEditorScreen(
                                     contentScale = ContentScale.Crop,
                                 )
                                 IconButton(
-                                    // ★ここは “Preview中は編集不可” だけにする
                                     enabled = tabModeState.value == EditorTabMode.Edit,
                                     onClick = { vm.removeImagePath(path) },
                                     modifier = Modifier
@@ -445,10 +436,8 @@ fun NoteEditorScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
-                            // .heightIn(min = 300.dp) ← previewでもスクロール出来る様に外す。
                             .border(BorderStroke(1.dp, IceGlassBorder), RoundedCornerShape(12.dp))
                             .verticalScroll(rememberScrollState())
-                            // ★previewでもスクロール出来る様に追加！
                             .background(IceGlassSurface, RoundedCornerShape(12.dp))
                             .padding(12.dp),
                     ) {
@@ -484,7 +473,7 @@ private fun EditorBottomBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        // Markdown Toolbar (ロジックはMarkdownTextHelperに委譲)
+        // Markdown Toolbar
         MarkdownToolbar(
             modifier = Modifier.weight(1f),
             onBoldClick = {
@@ -503,12 +492,11 @@ private fun EditorBottomBar(
                 if (enabled) onContentChange(MarkdownTextHelper.toggleCheckbox(contentField))
             },
             onHeadingClick = {
-                // シンプルにH2見出しをトグル
                 if (enabled) onContentChange(MarkdownTextHelper.toggleHeading(contentField, 2))
             },
         )
 
-        // Attach Image Button (右端)
+        // Attach Image Button
         IconButton(
             onClick = onImagePick,
             enabled = enabled,

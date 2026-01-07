@@ -30,8 +30,10 @@ fun TwoPaneNoteEditor(
                 vm = vm,
                 // 2ペインモードでは、リスト項目をクリックしても画面遷移せず、
                 // ViewModel内の「選択中ノート」を更新するだけで右側に反映されます。
-                // そのため、onOpenEditor は空（またはフォーカス移動のみ）でOKです。
-                onOpenEditor = { /* 右側のエディタがReactiveに更新されるので何もしない */ },
+                // Note: AllNotesScreenの実装が「クリック時に vm.loadNote(id) を呼ぶ」ようになっている前提です。
+                onOpenEditor = {
+                    // 画面遷移はしないので空実装でOK
+                },
             )
         }
 
@@ -47,9 +49,14 @@ fun TwoPaneNoteEditor(
         Box(modifier = Modifier.weight(1f)) {
             NoteEditorScreen(
                 vm = vm,
-                // 2ペインモードでは「戻る」概念がない（常に横にある）ため、
-                // onBack は空でOK、あるいは選択解除処理にします。
-                onBack = { /* 必要なら選択解除 */ },
+                onBack = {
+                    // 2ペイン時は「戻る」概念がない（常にリストが隣にある）ため何もしない、
+                    // あるいは選択解除（エディタを空にする）等の処理を入れても良いです。
+                },
+                // 【修正】ここが重要！
+                // 2画面表示の時は、エディタ側の「戻るボタン」を非表示にします。
+                // これにより「リストに戻る」という概念を消し、詳細プレビューとしての役割を強調します。
+                showBackButton = false,
             )
         }
     }

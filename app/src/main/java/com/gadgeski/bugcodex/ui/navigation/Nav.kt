@@ -3,6 +3,8 @@ package com.gadgeski.bugcodex.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -18,10 +20,9 @@ import com.gadgeski.bugcodex.ui.screens.MindMapScreen
 import com.gadgeski.bugcodex.ui.screens.NoteEditorScreen
 import com.gadgeski.bugcodex.ui.screens.SearchScreen
 import com.gadgeski.bugcodex.ui.screens.SettingsScreen
-import com.gadgeski.bugcodex.util.HingePosture
-import com.gadgeski.bugcodex.util.rememberHingePosture
+import com.gadgeski.bugcodex.ui.utils.HingePosture
+import com.gadgeski.bugcodex.ui.utils.rememberHingePosture
 
-// keep: ルート定義
 object Routes {
     const val BUGS = "bugs"
     const val SEARCH = "search"
@@ -40,7 +41,15 @@ fun AppNavHost(
 ) {
     // Foldableの状態を監視
     val hingePosture by rememberHingePosture()
-    val isBookMode = hingePosture == HingePosture.BOOK_MODE
+
+    // 画面幅による判定（全開時の大画面対応）
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+
+    // 2画面モードにする条件:
+    // 1. 本のように半開き (BOOK_MODE)
+    // 2. または、画面幅が十分に広い (600dp以上) = タブレットやFold全開時
+    val isTwoPane = hingePosture == HingePosture.BOOK_MODE || screenWidth > 600.dp
 
     NavHost(
         navController = navController,
@@ -88,27 +97,24 @@ fun AppNavHost(
             MindMapScreen(
                 onClose = { navController.navigateUp() },
                 vm = mindVm,
-                // Note: MindMapScreen 側に onOpenNote パラメータを追加した場合はここで設定します
-                // onOpenNote = { noteId -> ... }
             )
         }
         // 設定
         composable(Routes.SETTINGS) {
             SettingsScreen(
                 onBack = { navController.navigateUp() },
-                // ★ Fix: SettingsScreen 側の定義変更に合わせて vm 引数を削除しました
             )
         }
         // ALL_NOTES (Home)
         composable(Routes.ALL_NOTES) {
-            // Fold対応: Book Mode (半開き) なら2画面エディタを表示
-            if (isBookMode) {
+            // Fold対応: Book Mode または 大画面なら2画面エディタを表示
+            if (isTwoPane) {
                 TwoPaneNoteEditor(
                     vm = vm,
                     modifier = Modifier,
                 )
             } else {
-                // 通常時 (スマホ/全開) はリストを表示し、タップで遷移
+                // 通常時 (スマホ/閉じた状態) はリストを表示し、タップで遷移
                 AllNotesScreen(
                     vm = vm,
                     onOpenEditor = { navController.navigate(Routes.EDITOR) },
@@ -118,7 +124,6 @@ fun AppNavHost(
     }
 }
 
-// keep: トップレベル遷移ヘルパ
 private fun NavHostController.navigateTopLevel(route: String) {
     this.navigate(route) {
         launchSingleTop = true

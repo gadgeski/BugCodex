@@ -1,7 +1,7 @@
 // 【修正】ファイル名とクラス名が一致しないことに対するKtLintの警告を抑制します
 @file:Suppress("ktlint:standard:filename")
 
-package com.gadgeski.bugcodex.util
+package com.gadgeski.bugcodex.ui.utils
 
 import android.app.Activity
 import androidx.compose.runtime.Composable
