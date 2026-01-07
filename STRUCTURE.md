@@ -61,41 +61,44 @@ BugCodex/
 │       │   │               ├── di
 │       │   │               │   ├── AppModule.kt
 │       │   │               │   └── NetworkModule.kt
-│       │   │               ├── ui
-│       │   │               │   ├── AppScaffold.kt
-│       │   │               │   ├── NotesViewModel.kt
-│       │   │               │   ├── common
-│       │   │               │   │   ├── MarkdownEditUtils.kt
-│       │   │               │   │   └── MarkdownText.kt
-│       │   │               │   ├── components
-│       │   │               │   │   ├── Common.kt
-│       │   │               │   │   └── MarkdownToolbar.kt
-│       │   │               │   ├── mindmap
-│       │   │               │   │   └── MindMapViewModel.kt
-│       │   │               │   ├── navigation
-│       │   │               │   │   └── Nav.kt
-│       │   │               │   ├── screens
-│       │   │               │   │   ├── AllNotesScreen.kt
-│       │   │               │   │   ├── BugsScreen.kt
-│       │   │               │   │   ├── FoldersScreen.kt
-│       │   │               │   │   ├── MindMapScreen.kt
-│       │   │               │   │   ├── NoteEditorScreen.kt
-│       │   │               │   │   ├── SearchScreen.kt
-│       │   │               │   │   └── SettingsScreen.kt
-│       │   │               │   ├── theme
-│       │   │               │   │   ├── Color.kt
-│       │   │               │   │   ├── Theme.kt
-│       │   │               │   │   └── Type.kt
-│       │   │               │   └── utils
-│       │   │               │       ├── GistContentBuilder.kt
-│       │   │               │       ├── IcebergEditorVisualTransformation.kt
-│       │   │               │       └── MarkdownTextHelper.kt
-│       │   │               └── util
-│       │   │                   └── HingeSensor.kt
+│       │   │               └── ui
+│       │   │                   ├── AppScaffold.kt
+│       │   │                   ├── NotesViewModel.kt
+│       │   │                   ├── common
+│       │   │                   │   ├── MarkdownEditUtils.kt
+│       │   │                   │   └── MarkdownText.kt
+│       │   │                   ├── components
+│       │   │                   │   ├── Common.kt
+│       │   │                   │   ├── MarkdownToolbar.kt
+│       │   │                   │   └── TwoPaneNoteEditor.kt
+│       │   │                   ├── mindmap
+│       │   │                   │   └── MindMapViewModel.kt
+│       │   │                   ├── navigation
+│       │   │                   │   └── Nav.kt
+│       │   │                   ├── screens
+│       │   │                   │   ├── AllNotesScreen.kt
+│       │   │                   │   ├── BugsScreen.kt
+│       │   │                   │   ├── FoldersScreen.kt
+│       │   │                   │   ├── MindMapScreen.kt
+│       │   │                   │   ├── NoteEditorScreen.kt
+│       │   │                   │   ├── SearchScreen.kt
+│       │   │                   │   └── SettingsScreen.kt
+│       │   │                   ├── theme
+│       │   │                   │   ├── Color.kt
+│       │   │                   │   ├── Theme.kt
+│       │   │                   │   └── Type.kt
+│       │   │                   └── utils
+│       │   │                       ├── GistContentBuilder.kt
+│       │   │                       ├── HingeSensor.kt
+│       │   │                       ├── IcebergEditorVisualTransformation.kt
+│       │   │                       └── MarkdownTextHelper.kt
 │       │   └── res
 │       │       ├── drawable
 │       │       │   ├── ic_launcher_background.xml
 │       │       │   └── ic_launcher_foreground.xml
+│       │       ├── font
+│       │       │   ├── bbh_bartle.ttf
+│       │       │   └── orbitron_semibold.ttf
 │       │       ├── mipmap-anydpi-v26
 │       │       │   ├── ic_launcher.xml
 │       │       │   └── ic_launcher_round.xml
@@ -171,5 +174,5 @@ BugCodex/
 ├── local.properties
 └── settings.gradle.kts
 
-60 directories, 111 files
+60 directories, 114 files
 ```
