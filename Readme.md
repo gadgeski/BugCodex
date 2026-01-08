@@ -1,4 +1,4 @@
-# 🧊 BugMemo: Iceberg Tech Edition
+# 🧊 BugCodex: Iceberg Tech Edition
 
 > **"Inject Knowledge into the Core."**
 
@@ -11,23 +11,6 @@ BugMemo は、モバイル開発中に遭遇するバグや技術的な知見を
 v2.0 の大規模リファクタリングにより、モダン Android 開発のベストプラクティス（Hilt, Edge-to-Edge, Version Catalog）を完全導入し、**「使っていて心地よい、没入感のある開発者体験」** を提供します。
 
 ## ✨ 主な機能 (Features)
-
-## アプリ画面(新旧)
-
-<table>
-<tr>
-<td align="center">
-<img src="docs/img/Iceberg-Tech_Home.png" alt="ホーム(新)" width="300">
-<br>
-<sub>ホーム(新)</sub>
-</td>
-<td align="center">
-<img src="docs/img/BugMemo-Home.png" alt="ホーム(旧)" width="300">
-<br>
-<sub>ホーム(旧)</sub>
-</td>
-</tr>
-</table>
 
 ## アプリ画面(新)
 
@@ -90,6 +73,10 @@ SQLite の全文検索エンジン（FTS4）を採用し、大量のログから
 #### GitHub Gist Sync
 
 Personal Access Token を設定することで、ノートを GitHub Gist に Markdown としてバックアップ可能。チームへの共有や PC での閲覧がシームレスに。
+
+#### Foldable & Dual-Screen Support
+
+HingeSensor を活用し、2 画面端末（Surface Duo など）や折りたたみ端末の大画面を活かした TwoPaneNoteEditor インターフェースを提供。
 
 ## 🛠️ 技術スタック (Tech Stack)
 
