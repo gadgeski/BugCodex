@@ -30,7 +30,7 @@ import com.gadgeski.bugcodex.ui.screens.NoteEditorScreen
 @Composable
 fun TwoPaneNoteEditor(
     vm: NotesViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // キーボードが表示されているか検知
     val density = LocalDensity.current
@@ -42,7 +42,7 @@ fun TwoPaneNoteEditor(
     val listWeight by animateFloatAsState(
         targetValue = if (isImeVisible) 0.001f else 1f,
         animationSpec = tween(durationMillis = 300),
-        label = "ImmersiveAnimation"
+        label = "ImmersiveAnimation",
     )
 
     Row(modifier = modifier.fillMaxSize()) {
@@ -52,7 +52,7 @@ fun TwoPaneNoteEditor(
             Box(modifier = Modifier.weight(listWeight)) {
                 AllNotesScreen(
                     vm = vm,
-                    onOpenEditor = { /* 画面遷移なし */ }
+                    onOpenEditor = { /* 画面遷移なし */ },
                 )
             }
 
@@ -62,7 +62,7 @@ fun TwoPaneNoteEditor(
                 modifier = Modifier
                     .width(1.dp)
                     .fillMaxHeight(),
-                color = MaterialTheme.colorScheme.outlineVariant
+                color = MaterialTheme.colorScheme.outlineVariant,
             )
         }
 
@@ -74,7 +74,7 @@ fun TwoPaneNoteEditor(
                 onBack = { },
                 // IMEが出ている（＝全画面化している）時だけ、戻るボタンを表示するのもアリですが、
                 // キーボードを閉じれば戻るので、ここではシンプルに非表示のままにします。
-                showBackButton = false
+                showBackButton = false,
             )
         }
     }
