@@ -66,7 +66,7 @@ SQLite の全文検索エンジン（FTS4）を採用し、大量のログから
 
 #### Quick Capture (Injector 連携)
 
-別途開発のサテライトアプリ「Injector」や、Android の共有メニューからテキストを受け取り、自動でタイトルを生成して保存。
+別途開発のサテライトアプリ「Infuser」や、Android の共有メニューからテキストを受け取り、自動でタイトルを生成して保存。
 
 ### ☁️ Connectivity
 
