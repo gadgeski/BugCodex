@@ -17,22 +17,22 @@ v2.0 の大規模リファクタリングにより、モダン Android 開発の
 <table>
 <tr>
 <td align="center">
-<img src="docs/img/BugCodex_Home-Edit.png" alt="ホーム&編集画面" width="300">
+<img src="docs/img/BugCodex_Home-Edit.png" alt="ホーム&編集画面" height="500">
 <br>
 <sub>ホーム</sub>
 </td>
 <td align="center">
-<img src="docs/img/Iceberg-Tech_Dashboard.png" alt="ダッシュボード" width="300">
+<img src="docs/img/Iceberg-Tech_Dashboard.png" alt="ダッシュボード" height="500">
 <br>
 <sub>ダッシュボード</sub>
 </td>
 <td align="center">
-<img src="docs/img/Iceberg-Tech_Search.png" alt="検索" width="300">
+<img src="docs/img/Iceberg-Tech_Search.png" alt="検索" height="500">
 <br>
 <sub>検索</sub>
 </td>
 <td align="center">
-<img src="docs/img/Iceberg-Tech_Directories.png" alt="ディレクトリ" width="300">
+<img src="docs/img/Iceberg-Tech_Directories.png" alt="ディレクトリ" height="500">
 <br>
 <sub>ディレクトリ</sub>
 </td>
