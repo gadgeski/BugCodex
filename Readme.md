@@ -17,7 +17,7 @@ v2.0 の大規模リファクタリングにより、モダン Android 開発の
 <table>
 <tr>
 <td align="center">
-<img src="docs/img/Iceberg-Tech_Home.png" alt="ホーム" width="300">
+<img src="docs/img/BugCodex_Home-Edit.png" alt="ホーム&編集画面" width="300">
 <br>
 <sub>ホーム</sub>
 </td>
