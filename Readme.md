@@ -6,7 +6,7 @@
 
 ## 🚀 概要 (Overview)
 
-BugMemo は、モバイル開発中に遭遇するバグや技術的な知見を、**「最速で記録し、構造化して整理する」** ためのツールです。
+BugCodex は、モバイル開発中に遭遇するバグや技術的な知見を、**「最速で記録し、構造化して整理する」** ためのツールです。
 
 v2.0 の大規模リファクタリングにより、モダン Android 開発のベストプラクティス（Hilt, Edge-to-Edge, Version Catalog）を完全導入し、**「使っていて心地よい、没入感のある開発者体験」** を提供します。
 
@@ -171,4 +171,4 @@ Pull Request 作成時に、以下のワークフローが自動実行されま�
 
 ---
 
-_BugMemo - Inject Knowledge into the Core._
+_BugCodex - Inject Knowledge into the Core._
