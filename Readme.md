@@ -19,7 +19,7 @@ v2.0 の大規模リファクタリングにより、モダン Android 開発の
 <td align="center">
 <img src="docs/img/BugCodex_Home-Edit.png" alt="ホーム&編集画面" height="500">
 <br>
-<sub>ホーム</sub>
+<sub>ホーム&編集画面</sub>
 </td>
 <td align="center">
 <img src="docs/img/Iceberg-Tech_Dashboard.png" alt="ダッシュボード" height="500">
