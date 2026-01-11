@@ -7,13 +7,7 @@ BugCodex/
 │   ├── lint-baseline.xml
 │   ├── proguard-rules.pro
 │   ├── schemas
-│   │   ├── com.example.bugmemo.data.db.AppDatabase
-│   │   │   ├── 2.json
-│   │   │   ├── 3.json
-│   │   │   └── 4.json
-│   │   ├── com.gadgeski.bugcodex.data.db.AppDatabase
-│   │   │   └── 4.json
-│   │   └── com.gadgeski.bugmemo.data.db.AppDatabase
+│   │   └── com.gadgeski.bugcodex.data.db.AppDatabase
 │   │       └── 4.json
 │   └── src
 │       ├── androidTest
@@ -154,14 +148,9 @@ BugCodex/
 │   │   ├── overview.md
 │   │   └── settingsscreen + appLocalemanager.md
 │   └── img
-│       ├── Bug Memo-FontBold.png
-│       ├── BugMemo-Home.png
-│       ├── BugMemo-Mindmap.png
-│       ├── BugMemo-Search.png
-│       ├── BugMemo_Setting.png
+│       ├── BugCodex_Home-Edit.png
 │       ├── Iceberg-Tech_Dashboard.png
 │       ├── Iceberg-Tech_Directories.png
-│       ├── Iceberg-Tech_Home.png
 │       └── Iceberg-Tech_Search.png
 ├── gradle
 │   ├── libs.versions.toml
@@ -174,5 +163,5 @@ BugCodex/
 ├── local.properties
 └── settings.gradle.kts
 
-60 directories, 114 files
+58 directories, 105 files
 ```
