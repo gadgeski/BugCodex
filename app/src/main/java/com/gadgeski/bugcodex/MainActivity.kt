@@ -39,7 +39,6 @@ class MainActivity : ComponentActivity() {
         seedDebugDataOnce()
 
         // ★ Fix: savedInstanceState の有無に関わらず、Intentにデータがあれば処理を試みる
-        // (画面回転などの再生成時は、下の handleIntent 内で action が消されているため重複しない)
         handleIntent(intent)
 
         setContent {
@@ -56,15 +55,17 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        // ★ Fix: 新しいIntentを受け取ったら、ActivityのIntentを更新する（重要）
-        // これをしないと、getIntent() が古いままになり、整合性が取れなくなることがある
+        // ★ Fix: 新しいIntentを受け取ったら、ActivityのIntentを更新する
         setIntent(intent)
         handleIntent(intent)
     }
 
     private fun handleIntent(intent: Intent?) {
-        Log.d("BugCodex", "handleIntent: action=${intent?.action}, type=${intent?.type}")
+        Log.d("BugCodex", "handleIntent: action=${intent?.action}, data=${intent?.data}")
 
+        // ---------------------------------------------------------
+        // 1. テキスト共有 (Existing Logic)
+        // ---------------------------------------------------------
         if (intent?.action == Intent.ACTION_SEND && intent.type?.startsWith("text/") == true) {
             val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
             Log.d("BugCodex", "Shared Text received: ${sharedText?.take(20)}...")
@@ -72,10 +73,34 @@ class MainActivity : ComponentActivity() {
             if (!sharedText.isNullOrBlank()) {
                 vm.handleSharedText(sharedText)
 
-                // ★ Fix: 処理済みIntentを「消費」する
-                // これにより、画面回転などで onCreate が再走しても、同じテキストが再度処理されるのを防ぐ
+                // 処理済みIntentを「消費」する
                 intent.action = ""
                 intent.removeExtra(Intent.EXTRA_TEXT)
+            }
+        }
+
+        // ---------------------------------------------------------
+        // 2. エコシステム連携: Deep Link (New Logic)
+        // 形式: bugcodex://open?project=ProjectName&repo=...
+        // ---------------------------------------------------------
+        if (intent?.action == Intent.ACTION_VIEW && intent.data?.scheme == "bugcodex") {
+            val uri = intent.data
+            if (uri?.host == "open") {
+                val projectName = uri.getQueryParameter("project")
+                // 必要に応じて他のパラメータも取得可能（例: repoUrl）
+                val repoUrl = uri.getQueryParameter("repo")
+
+                Log.d("BugCodex", "DeepLink received: project=$projectName")
+
+                if (!projectName.isNullOrBlank()) {
+                    // ★ ここで ViewModel に指令を出します
+                    // ※ NotesViewModel にこの関数がない場合、赤線が出ます。後ほど追加が必要です。
+                    vm.onProjectContextReceived(projectName, repoUrl)
+
+                    // 処理済みIntentを「消費」する (再起動時の重複実行防止)
+                    intent.action = ""
+                    intent.data = null
+                }
             }
         }
     }

@@ -320,4 +320,26 @@ class NotesViewModel @Inject constructor(
             }
         }
     }
+
+    // =================================================================
+    // ★ Fix: クラスの内側（最後の } の前）に配置しました
+    // =================================================================
+    fun onProjectContextReceived(projectName: String, repoUrl: String?) {
+        // ログで到達確認
+        android.util.Log.d("BugCodex", "ViewModel received Project Context: $projectName")
+
+        if (projectName.isNotBlank()) {
+            // 【実装】検索クエリにプロジェクト名をセットする
+            // これにより、アプリが開いた瞬間にそのプロジェクトのメモだけが表示されます
+            setQuery(projectName)
+
+            // UIに通知（トースト表示）
+            sendEvent(UiEvent.Message("Context: $projectName"))
+        }
+
+        // repoUrl はまだ使い道が決まっていなくても、ログに出せば「unused」警告は消えます
+        if (!repoUrl.isNullOrBlank()) {
+            android.util.Log.d("BugCodex", "Repository URL: $repoUrl")
+        }
+    }
 }
