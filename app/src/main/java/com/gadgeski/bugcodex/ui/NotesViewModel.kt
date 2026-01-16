@@ -137,9 +137,16 @@ class NotesViewModel @Inject constructor(
 
     fun newNote() {
         val now = System.currentTimeMillis()
+
+        // ★ Fix: コンテキスト継承ロジック (Context Inheritance)
+        // 検索クエリが入っている場合、それを「プロジェクト名」とみなしてタイトルに自動挿入します。
+        // 例: クエリが "DivChroma" なら、タイトルは "【DivChroma】 " で始まります。
+        val currentQuery = _query.value.trim()
+        val initialTitle = if (currentQuery.isNotEmpty()) "【$currentQuery】 " else ""
+
         _editing.value = Note(
             id = 0L,
-            title = "",
+            title = initialTitle, // ← ここにセット
             content = "",
             folderId = null,
             createdAt = now,
