@@ -1,5 +1,4 @@
-// 【修正】複数の警告をカンマ区切りでまとめて抑制（これでエラーは消えます）
-@file:Suppress("ktlint:standard:function-naming", "COMPOSE_APPLIER_CALL_MISMATCH")
+@file:Suppress("ktlint:standard:function-naming")
 @file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.gadgeski.bugcodex.ui.screens
@@ -13,7 +12,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -79,8 +77,7 @@ import com.gadgeski.bugcodex.ui.theme.IceSlate
 import com.gadgeski.bugcodex.ui.theme.IceTextPrimary
 import com.gadgeski.bugcodex.ui.theme.IceTextSecondary
 import com.gadgeski.bugcodex.ui.theme.Orbitron
-
-// 【追加】Orbitronフォントを使用するためにインポート(import com.gadgeski.bugcodex.ui.theme.Orbitron)
+import androidx.compose.ui.platform.LocalWindowInfo
 
 @Composable
 fun AllNotesScreen(
@@ -144,33 +141,29 @@ fun AllNotesScreen(
                     .padding(inner)
                     .fillMaxSize(),
             ) {
-                // ──── Header Section (Responsive Optimized) ────
-                // 警告回避のためLocalDensityを外に出す
+// ──── Header Section (Responsive Optimized) ────
+// 追加: AllNotesScreen の中（Scaffold の content の中でも外でもOK）
                 val density = LocalDensity.current
+                val containerWidthPx = LocalWindowInfo.current.containerSize.width
+                val (trackerFontSize, bugFontSize) = remember(containerWidthPx, density) {
+                    val availableWidthSp = with(density) { containerWidthPx.toSp() }
+                    val tracker = availableWidthSp * 0.13f
+                    val bug = tracker * 1.7f
+                    tracker to bug
+                }
 
-                BoxWithConstraints(
+// 置換: 既存の BoxWithConstraints ブロック
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp),
                 ) {
-                    // 【修正】再コンポーズ負荷を減らすため、計算を remember でメモ化
-                    // 画面幅 (constraints.maxWidth) が変わった時だけ再計算します
-                    val (trackerFontSize, bugFontSize) = remember(constraints.maxWidth, density) {
-                        val availableWidth = with(density) { constraints.maxWidth.toSp() }
-                        // サイズ計算ロジック:
-                        // TRACKER (7文字) を基準に、画面幅の約13%をフォントサイズとする
-                        val tracker = availableWidth * 0.13
-                        // 【修正】2.2倍だと大きすぎてはみ出るため、1.7倍に縮小してバランスを調整
-                        val bug = tracker * 1.7
-                        tracker to bug
-                    }
-
                     Column(verticalArrangement = Arrangement.spacedBy((-10).dp)) {
                         Text(
                             text = "BUG",
                             style = MaterialTheme.typography.displayLarge.copy(
                                 fontSize = bugFontSize,
-                                lineHeight = bugFontSize * 0.9,
+                                lineHeight = bugFontSize * 0.9f,
                                 platformStyle = PlatformTextStyle(includeFontPadding = false),
                                 letterSpacing = 2.sp,
                             ),
@@ -178,7 +171,6 @@ fun AllNotesScreen(
                             maxLines = 1,
                             softWrap = false,
                         )
-                        // 【修正】TRACKER部分のみフォントをOrbitronに変更し、視認性とデザインバランスを向上
                         Text(
                             text = "TRACKER",
                             style = MaterialTheme.typography.displayLarge.copy(
@@ -186,8 +178,8 @@ fun AllNotesScreen(
                                 lineHeight = trackerFontSize,
                                 platformStyle = PlatformTextStyle(includeFontPadding = false),
                                 letterSpacing = 0.sp,
-                                fontFamily = Orbitron, // ここを変更: BBH Bartle -> Orbitron
-                                fontWeight = FontWeight.SemiBold, // 少し太めにしてバランスを取る
+                                fontFamily = Orbitron,
+                                fontWeight = FontWeight.SemiBold,
                             ),
                             color = IceTextPrimary.copy(alpha = 0.8f),
                             modifier = Modifier.offset(y = (-4).dp),
