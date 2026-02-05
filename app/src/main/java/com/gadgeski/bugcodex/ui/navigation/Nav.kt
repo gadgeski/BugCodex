@@ -1,9 +1,11 @@
 package com.gadgeski.bugcodex.ui.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -39,24 +41,20 @@ fun AppNavHost(
     navController: NavHostController,
     vm: NotesViewModel,
 ) {
-    // Foldableの状態を監視
     val hingePosture by rememberHingePosture()
 
-    // 画面幅による判定（全開時の大画面対応）
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
+    // CHANGED: Configuration.screenWidthDp -> LocalWindowInfo.current.containerSize
+    val containerSize = LocalWindowInfo.current.containerSize
+    val density = LocalDensity.current
+    val windowWidthDp = with(density) { containerSize.width.toDp() }
 
-    // 2画面モードにする条件:
-    // 1. 本のように半開き (BOOK_MODE)
-    // 2. または、画面幅が十分に広い (600dp以上) = タブレットやFold全開時
-    val isTwoPane = hingePosture == HingePosture.BOOK_MODE || screenWidth > 600.dp
+    val isTwoPane = hingePosture == HingePosture.BOOK_MODE || windowWidthDp >= 600.dp
 
     NavHost(
         navController = navController,
         startDestination = Routes.ALL_NOTES,
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
     ) {
-        // 一覧（Bugs）
         composable(Routes.BUGS) {
             BugsScreen(
                 vm = vm,
@@ -68,7 +66,7 @@ fun AppNavHost(
                 onOpenAllNotes = { navController.navigateTopLevel(Routes.ALL_NOTES) },
             )
         }
-        // 検索
+
         composable(Routes.SEARCH) {
             SearchScreen(
                 vm = vm,
@@ -76,7 +74,7 @@ fun AppNavHost(
                 onOpenNotes = { navController.navigateTopLevel(Routes.ALL_NOTES) },
             )
         }
-        // フォルダ
+
         composable(Routes.FOLDERS) {
             FoldersScreen(
                 vm = vm,
@@ -84,14 +82,14 @@ fun AppNavHost(
                 onOpenNotes = { navController.navigateTopLevel(Routes.ALL_NOTES) },
             )
         }
-        // エディタ
+
         composable(Routes.EDITOR) {
             NoteEditorScreen(
                 vm = vm,
                 onBack = { navController.navigateUp() },
             )
         }
-        // MindMap
+
         composable(Routes.MINDMAP) {
             val mindVm: MindMapViewModel = hiltViewModel()
             MindMapScreen(
@@ -99,22 +97,15 @@ fun AppNavHost(
                 vm = mindVm,
             )
         }
-        // 設定
+
         composable(Routes.SETTINGS) {
-            SettingsScreen(
-                onBack = { navController.navigateUp() },
-            )
+            SettingsScreen(onBack = { navController.navigateUp() })
         }
-        // ALL_NOTES (Home)
+
         composable(Routes.ALL_NOTES) {
-            // Fold対応: Book Mode または 大画面なら2画面エディタを表示
             if (isTwoPane) {
-                TwoPaneNoteEditor(
-                    vm = vm,
-                    modifier = Modifier,
-                )
+                TwoPaneNoteEditor(vm = vm)
             } else {
-                // 通常時 (スマホ/閉じた状態) はリストを表示し、タップで遷移
                 AllNotesScreen(
                     vm = vm,
                     onOpenEditor = { navController.navigate(Routes.EDITOR) },
