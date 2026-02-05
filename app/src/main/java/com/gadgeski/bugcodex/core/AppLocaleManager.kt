@@ -28,7 +28,6 @@ object AppLocaleManager {
     // ★ Added: エディタ文字スケール（1.0f=等倍）
     private val KEY_EDITOR_FONT_SCALE = floatPreferencesKey("editor_font_scale")
 
-
     fun languageTagFlow(context: Context): Flow<String> = context.dataStore.data
         .catch { e -> if (e is IOException) emit(emptyPreferences()) else throw e }
         .map { prefs -> prefs[KEY_LANGUAGE_TAG] ?: "" }
