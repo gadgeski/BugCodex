@@ -146,7 +146,7 @@ class NotesViewModel @Inject constructor(
 
         _editing.value = Note(
             id = 0L,
-            title = initialTitle, // ← ここにセット
+            title = initialTitle,
             content = "",
             folderId = null,
             createdAt = now,

@@ -18,7 +18,6 @@ data class MindNode(
     val id: Long,
     val title: String,
     val parentId: Long? = null,
-    // 連携ノートID
     val noteId: Long? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),

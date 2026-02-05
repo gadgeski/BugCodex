@@ -32,7 +32,7 @@ fun NoteFolderLabel(
         onClick = { /* no-op */ },
         label = {
             Text(
-                text = folderName.uppercase(), // 大文字にしてコードっぽく
+                text = folderName.uppercase(),
                 fontFamily = FontFamily.Monospace,
                 style = MaterialTheme.typography.labelSmall,
             )
@@ -46,14 +46,14 @@ fun NoteFolderLabel(
             borderColor = IceGlassBorder,
             borderWidth = 1.dp,
         ),
-        shape = RoundedCornerShape(4.dp), // 角丸を小さくしてTech感
+        shape = RoundedCornerShape(4.dp),
     )
 }
 
 // ★ Removed: 未使用の SectionSeparator と AnchorExample を削除しました
 
 /* ─────────────── Preview ────────────── */
-@Preview(showBackground = false) // 背景透過で確認
+@Preview(showBackground = false)
 @Composable
 private fun Preview_NoteFolderLabel() {
     val folders = listOf(Folder(id = 1L, name = "Kotlin"))

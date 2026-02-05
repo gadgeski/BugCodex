@@ -1,5 +1,3 @@
-// app/src/main/java/com/gadgeski/bugmemo/core/FeatureFlags.kt
-
 package com.gadgeski.bugcodex.core
 
 import com.gadgeski.bugcodex.BuildConfig

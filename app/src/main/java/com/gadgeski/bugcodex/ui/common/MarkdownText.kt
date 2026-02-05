@@ -198,7 +198,7 @@ private fun CodeBlockView(
                     fontFamily = FontFamily.Monospace,
                     // ★ FIX: Editorと統一。14.sp固定にし、行間をその1.5倍にする
                     fontSize = 14.sp,
-                    lineHeight = 21.sp, // 14.sp * 1.5
+                    lineHeight = 21.sp,
                 ),
                 // ★ FIX: Editorと統一。IceTextSecondaryを使用
                 color = IceTextSecondary,
