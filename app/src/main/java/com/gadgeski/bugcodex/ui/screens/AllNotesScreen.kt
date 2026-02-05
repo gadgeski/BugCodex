@@ -56,6 +56,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -77,7 +78,6 @@ import com.gadgeski.bugcodex.ui.theme.IceSlate
 import com.gadgeski.bugcodex.ui.theme.IceTextPrimary
 import com.gadgeski.bugcodex.ui.theme.IceTextSecondary
 import com.gadgeski.bugcodex.ui.theme.Orbitron
-import androidx.compose.ui.platform.LocalWindowInfo
 
 @Composable
 fun AllNotesScreen(
