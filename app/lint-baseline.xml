@@ -7,7 +7,7 @@
         errorLine1="distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip"
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/wrapper/gradle-wrapper.properties"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/wrapper/gradle-wrapper.properties"
             line="4"
             column="17"/>
     </issue>
@@ -18,7 +18,7 @@
         errorLine1="datastore = &quot;1.1.1&quot;"
         errorLine2="            ~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="7"
             column="13"/>
     </issue>
@@ -29,7 +29,7 @@
         errorLine1="room = &quot;2.7.0-alpha11&quot;"
         errorLine2="       ~~~~~~~~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="8"
             column="8"/>
     </issue>
@@ -40,7 +40,7 @@
         errorLine1="room = &quot;2.7.0-alpha11&quot;"
         errorLine2="       ~~~~~~~~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="8"
             column="8"/>
     </issue>
@@ -51,7 +51,7 @@
         errorLine1="room = &quot;2.7.0-alpha11&quot;"
         errorLine2="       ~~~~~~~~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="8"
             column="8"/>
     </issue>
@@ -62,7 +62,7 @@
         errorLine1="room = &quot;2.7.0-alpha11&quot;"
         errorLine2="       ~~~~~~~~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="8"
             column="8"/>
     </issue>
@@ -73,7 +73,7 @@
         errorLine1="activityCompose = &quot;1.12.0&quot;"
         errorLine2="                  ~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="12"
             column="19"/>
     </issue>
@@ -84,7 +84,7 @@
         errorLine1="composeBom = &quot;2025.11.01&quot;"
         errorLine2="             ~~~~~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="13"
             column="14"/>
     </issue>
@@ -95,7 +95,7 @@
         errorLine1="securityCrypto = &quot;1.1.0-alpha06&quot;"
         errorLine2="                 ~~~~~~~~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="17"
             column="18"/>
     </issue>
@@ -106,7 +106,7 @@
         errorLine1="kotlin = &quot;2.0.21&quot;"
         errorLine2="         ~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="5"
             column="10"/>
     </issue>
@@ -117,7 +117,7 @@
         errorLine1="kotlin = &quot;2.0.21&quot;"
         errorLine2="         ~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="5"
             column="10"/>
     </issue>
@@ -128,7 +128,7 @@
         errorLine1="retrofit = &quot;2.11.0&quot; # 安定版として一般的 (2.11.0でも可)"
         errorLine2="           ~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="24"
             column="12"/>
     </issue>
@@ -139,7 +139,7 @@
         errorLine1="retrofit = &quot;2.11.0&quot; # 安定版として一般的 (2.11.0でも可)"
         errorLine2="           ~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="24"
             column="12"/>
     </issue>
@@ -150,7 +150,7 @@
         errorLine1="okhttp = &quot;4.12.0&quot;"
         errorLine2="         ~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="25"
             column="10"/>
     </issue>
@@ -161,7 +161,7 @@
         errorLine1="okhttp = &quot;4.12.0&quot;"
         errorLine2="         ~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="25"
             column="10"/>
     </issue>
@@ -172,7 +172,7 @@
         errorLine1="moshi = &quot;1.15.0&quot;"
         errorLine2="        ~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="26"
             column="9"/>
     </issue>
@@ -183,7 +183,7 @@
         errorLine1="moshi = &quot;1.15.0&quot;"
         errorLine2="        ~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="26"
             column="9"/>
     </issue>
@@ -194,7 +194,7 @@
         errorLine1="moshi = &quot;1.15.0&quot;"
         errorLine2="        ~~~~~~~~">
         <location
-            file="$HOME/AndroidStudioProjects/bugmemo/gradle/libs.versions.toml"
+            file="$HOME/AndroidStudioProjects/BugCodex/gradle/libs.versions.toml"
             line="26"
             column="9"/>
     </issue>
