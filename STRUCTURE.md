@@ -54,7 +54,8 @@ BugCodex/
 │       │   │               │       └── GistService.kt
 │       │   │               ├── di
 │       │   │               │   ├── AppModule.kt
-│       │   │               │   └── NetworkModule.kt
+│       │   │               │   ├── NetworkModule.kt
+│       │   │               │   └── StorageModule.kt
 │       │   │               └── ui
 │       │   │                   ├── AppScaffold.kt
 │       │   │                   ├── NotesViewModel.kt
@@ -163,5 +164,5 @@ BugCodex/
 ├── local.properties
 └── settings.gradle.kts
 
-58 directories, 105 files
+58 directories, 106 files
 ```
