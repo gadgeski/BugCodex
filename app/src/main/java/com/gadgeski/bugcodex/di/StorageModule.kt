@@ -34,7 +34,7 @@ object StorageModule {
     @Named("SecureStorage")
     fun provideEncryptedSharedPreferences(
         @ApplicationContext context: Context,
-        masterKey: MasterKey
+        masterKey: MasterKey,
     ): SharedPreferences {
         // Create EncryptedSharedPreferences with suppressions for library-level deprecations
         return EncryptedSharedPreferences.create(
@@ -42,7 +42,7 @@ object StorageModule {
             SECURE_PREFS_FILE,
             masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
         )
     }
 }

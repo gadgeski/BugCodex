@@ -31,7 +31,7 @@ import javax.inject.Singleton
 @Singleton
 class SettingsRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
-    @Named("SecureStorage") private val secureStorage: SharedPreferences
+    @Named("SecureStorage") private val secureStorage: SharedPreferences,
 ) {
     // 既存のプロセス寿命に合わせたスコープ
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
