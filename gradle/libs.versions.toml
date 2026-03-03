@@ -22,7 +22,7 @@ composeBom = "2024.10.01"
 appcompat = "1.7.1"
 paging = "3.3.6"
 leakcanary = "2.14"
-securityCrypto = "1.1.0"
+securityCrypto = "1.1.0-alpha06"
 
 # View System Material (XMLテーマ用)
 material = "1.13.0"

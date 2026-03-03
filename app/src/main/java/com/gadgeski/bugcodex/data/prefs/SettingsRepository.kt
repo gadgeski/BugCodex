@@ -1,11 +1,11 @@
 package com.gadgeski.bugcodex.data.prefs
 
-import android.content.Context
+import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -14,36 +14,63 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Singleton
 
-private const val DS_NAME = "settings"
-private val Context.dataStore by preferencesDataStore(name = DS_NAME)
-
-class SettingsRepository private constructor(
-    private val appContext: Context,
+/**
+ * BugMemo Mode: Robust Settings Repository
+ * * [SECURITY UPGRADE]
+ * - 一般的な検索クエリやフィルタ設定は DataStore (非暗号化) を継続利用。
+ * - GitHub Token などの機密情報は EncryptedSharedPreferences (暗号化) へ物理的に隔離。
+ * - 初回起動時に DataStore(平文) から暗号化ストレージへの自動移行を実行します。
+ */
+@Singleton
+class SettingsRepository @Inject constructor(
+    private val dataStore: DataStore<Preferences>,
+    @Named("SecureStorage") private val secureStorage: SharedPreferences
 ) {
-    // Repository内でStateFlowを維持するためのスコープ（アプリプロセスと同寿命の想定）
+    // 既存のプロセス寿命に合わせたスコープ
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    // キーは lower_snake_case（Preferencesのキー文字列）でOK。プロパティ名はlowerCamelでOK。
     private object Keys {
+        // 非機密データ (DataStore)
         val filterFolderIdKey = longPreferencesKey("filter_folder_id")
         val lastQueryKey = stringPreferencesKey("last_query")
 
-        // ★ Migrated: GitHub Token を DataStore に保存（平文）
-        val githubTokenKey = stringPreferencesKey("github_token")
+        // 旧・機密データ (DataStore / 平文保存されていたキー)
+        val legacyGithubTokenKey = stringPreferencesKey("github_token")
+
+        // 新・機密データ (EncryptedSharedPreferences)
+        const val SECURE_GITHUB_TOKEN = "secure_github_token"
     }
 
-    /** 現在のフォルダ絞り込みID（なければ null） */
-    val filterFolderId: Flow<Long?> =
-        appContext.dataStore.data
-            .map { prefs: Preferences -> prefs[Keys.filterFolderIdKey] }
-            .distinctUntilChanged()
+    // --- GitHub Token State Management ---
+    private val _githubToken = MutableStateFlow("")
+    val githubToken: StateFlow<String> = _githubToken.asStateFlow()
 
-    /** フォルダ絞り込みIDを保存（null で削除） */
+    init {
+        // 1. DataStore から暗号化ストレージへのマイグレーションを実行
+        performMigration()
+
+        // 2. 暗号化ストレージから現在のトークンを読み込み StateFlow を初期化
+        _githubToken.value = secureStorage.getString(Keys.SECURE_GITHUB_TOKEN, "") ?: ""
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 一般設定 (DataStore Preferences)
+    // ─────────────────────────────────────────────────────────────
+
+    /** 現在のフォルダ絞り込みID */
+    val filterFolderId: Flow<Long?> = dataStore.data
+        .map { prefs -> prefs[Keys.filterFolderIdKey] }
+        .distinctUntilChanged()
+
     suspend fun setFilterFolderId(id: Long?) {
-        appContext.dataStore.edit { prefs ->
+        dataStore.edit { prefs ->
             if (id == null) {
                 prefs.remove(Keys.filterFolderIdKey)
             } else {
@@ -52,61 +79,59 @@ class SettingsRepository private constructor(
         }
     }
 
-    /** 検索クエリ（空文字をデフォルトで返す） */
-    val lastQuery: Flow<String> =
-        appContext.dataStore.data
-            .map { prefs -> prefs[Keys.lastQueryKey] ?: "" }
-            .distinctUntilChanged()
+    /** 検索クエリ */
+    val lastQuery: Flow<String> = dataStore.data
+        .map { prefs -> prefs[Keys.lastQueryKey] ?: "" }
+        .distinctUntilChanged()
 
-    /** 検索クエリを保存 */
     suspend fun setLastQuery(q: String) {
-        appContext.dataStore.edit { prefs ->
+        dataStore.edit { prefs ->
             prefs[Keys.lastQueryKey] = q
         }
     }
 
     // ─────────────────────────────────────────────────────────────
-    // GitHub Token (DataStore Preferences)  ※平文
+    // GitHub Token (Encrypted Storage)
     // ─────────────────────────────────────────────────────────────
-    private val _githubToken = MutableStateFlow("")
-    val githubToken: StateFlow<String> = _githubToken.asStateFlow()
 
-    init {
-        // DataStore → StateFlow にブリッジ（呼び出し元の変更を避けるため）
-        scope.launch {
-            appContext.dataStore.data
-                .map { prefs -> prefs[Keys.githubTokenKey] ?: "" }
-                .distinctUntilChanged()
-                .collect { token ->
-                    _githubToken.value = token
-                }
-        }
-    }
-
-    /** GitHub Token を保存（空文字も許容。空なら remove にしたい場合はここで分岐） */
-    suspend fun setGithubToken(token: String) {
-        appContext.dataStore.edit { prefs ->
-            prefs[Keys.githubTokenKey] = token
-        }
-        // 即時反映（collectの反映を待たずUIが追従する）
+    /** * GitHub Token を安全に保存
+     * ※ 同時にアプリ内の StateFlow も更新し、即時反映を担保します。
+     */
+    fun setGithubToken(token: String) {
+        secureStorage.edit().putString(Keys.SECURE_GITHUB_TOKEN, token).apply()
         _githubToken.value = token
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // デバッグ／テスト用途の全消し API（今は未使用）
-    // ─────────────────────────────────────────────────────────────
-    @Suppress("unused")
-    suspend fun clearAll() {
-        appContext.dataStore.edit { it.clear() }
+    /** ログアウト時などのトークン削除 */
+    fun clearGithubToken() {
+        secureStorage.edit().remove(Keys.SECURE_GITHUB_TOKEN).apply()
         _githubToken.value = ""
     }
 
-    companion object {
-        @Volatile
-        private var instance: SettingsRepository? = null
+    // ─────────────────────────────────────────────────────────────
+    // Migration Logic
+    // ─────────────────────────────────────────────────────────────
 
-        fun get(context: Context): SettingsRepository = instance ?: synchronized(this) {
-            instance ?: SettingsRepository(context.applicationContext).also { instance = it }
+    /**
+     * データ移行シーケンス
+     * 平文で保存されていたトークンを検知し、暗号化ストレージへ移動させた後、
+     * DataStore からは跡形もなく消去します。
+     */
+    private fun performMigration() {
+        scope.launch {
+            val prefs = dataStore.data.first()
+            val legacyToken = prefs[Keys.legacyGithubTokenKey]
+
+            if (!legacyToken.isNullOrEmpty()) {
+                // 1. 暗号化ストレージへ安全にコピー
+                setGithubToken(legacyToken)
+
+                // 2. DataStore 側の平文データを消去 (Wipe)
+                dataStore.edit { it.remove(Keys.legacyGithubTokenKey) }
+
+                // システムログ風の演出用（必要に応じて）
+                // println("[BugMemo] Security Migration Completed: Token moved to EncryptedStorage.")
+            }
         }
     }
 }
