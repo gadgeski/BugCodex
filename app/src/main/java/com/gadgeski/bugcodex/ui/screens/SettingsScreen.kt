@@ -59,10 +59,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gadgeski.bugcodex.R
 import com.gadgeski.bugcodex.core.AppLocaleManager
-import com.gadgeski.bugcodex.data.prefs.SettingsRepository
+import com.gadgeski.bugcodex.ui.SettingsViewModel
 import com.gadgeski.bugcodex.ui.theme.IceCyan
 import com.gadgeski.bugcodex.ui.theme.IceDeepNavy
 import com.gadgeski.bugcodex.ui.theme.IceGlassBorder
@@ -77,23 +78,27 @@ import kotlin.math.abs
 
 /**
  * 設定画面（Iceberg Tech Edition）
- * - GitHub Token 設定を追加
+ * - hiltViewModel のインポートパスを androidx.hilt.lifecycle.viewmodel.compose へ修正。
  */
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit = {},
+    viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val ctx = LocalContext.current
     val activity = ctx as? Activity
 
+    // --- External Flows (AppLocaleManager) ---
     val languageTag by AppLocaleManager.languageTagFlow(ctx)
         .collectAsStateWithLifecycle(initialValue = "")
 
     val editorFontScale by AppLocaleManager.editorFontScaleFlow(ctx)
         .collectAsStateWithLifecycle(initialValue = 1.0f)
 
-    val githubToken by SettingsRepository.get(ctx).githubToken.collectAsStateWithLifecycle()
+    // --- ViewModel States ---
+    val githubToken by viewModel.githubToken.collectAsStateWithLifecycle()
 
+    // --- UI States (Temporary holders) ---
     var selected by remember(languageTag) { mutableStateOf(languageTag) }
     var tempScale by rememberSaveable(editorFontScale) { mutableFloatStateOf(editorFontScale) }
     var tempToken by remember(githubToken) { mutableStateOf(githubToken) }
@@ -201,7 +206,7 @@ fun SettingsScreen(
                     }
                 }
 
-                // ===== GitHub連携セクション (New) =====
+                // ===== GitHub連携セクション =====
                 SettingsGlassCard {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         SectionHeader(title = "GITHUB_INTEGRATION")
@@ -220,7 +225,7 @@ fun SettingsScreen(
                             },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            visualTransformation = PasswordVisualTransformation(), // パスワード形式で表示
+                            visualTransformation = PasswordVisualTransformation(),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedTextColor = IceTextPrimary,
                                 unfocusedTextColor = IceTextPrimary,
@@ -263,9 +268,9 @@ fun SettingsScreen(
                                 if (abs(tempScale - editorFontScale) > 0.0001f) {
                                     AppLocaleManager.setEditorFontScale(ctx, tempScale)
                                 }
-                                // トークン保存
+                                // ViewModel を介してトークンを保存
                                 if (tempToken != githubToken) {
-                                    SettingsRepository.get(ctx).setGithubToken(tempToken)
+                                    viewModel.updateGithubToken(tempToken)
                                 }
                             }
                         },
