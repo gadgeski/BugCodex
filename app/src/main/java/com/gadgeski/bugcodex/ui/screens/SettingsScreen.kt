@@ -1,52 +1,23 @@
 @file:Suppress("ktlint:standard:function-naming")
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.gadgeski.bugcodex.ui.screens
 
 import android.app.Activity
+import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,55 +26,75 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gadgeski.bugcodex.R
 import com.gadgeski.bugcodex.core.AppLocaleManager
 import com.gadgeski.bugcodex.ui.SettingsViewModel
-import com.gadgeski.bugcodex.ui.theme.IceCyan
-import com.gadgeski.bugcodex.ui.theme.IceDeepNavy
-import com.gadgeski.bugcodex.ui.theme.IceGlassBorder
-import com.gadgeski.bugcodex.ui.theme.IceGlassSurface
-import com.gadgeski.bugcodex.ui.theme.IceHorizon
-import com.gadgeski.bugcodex.ui.theme.IceSilver
-import com.gadgeski.bugcodex.ui.theme.IceSlate
-import com.gadgeski.bugcodex.ui.theme.IceTextPrimary
-import com.gadgeski.bugcodex.ui.theme.IceTextSecondary
+import com.gadgeski.bugcodex.ui.theme.*
 import kotlinx.coroutines.launch
+import java.util.concurrent.Executor
 import kotlin.math.abs
 
 /**
  * 設定画面（Iceberg Tech Edition）
- * - hiltViewModel のインポートパスを androidx.hilt.lifecycle.viewmodel.compose へ修正。
+ * [SECURITY FIX] BiometricPrompt を使用したセキュアなトークン表示を実装
  */
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit = {},
-    viewModel: SettingsViewModel = hiltViewModel(),
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val ctx = LocalContext.current
-    val activity = ctx as? Activity
+    // BiometricPrompt には FragmentActivity が必須。MainActivity が継承している必要があります。
+    val activity = ctx as? FragmentActivity
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    // --- External Flows (AppLocaleManager) ---
+    // --- データの監視 ---
     val languageTag by AppLocaleManager.languageTagFlow(ctx)
         .collectAsStateWithLifecycle(initialValue = "")
 
     val editorFontScale by AppLocaleManager.editorFontScaleFlow(ctx)
         .collectAsStateWithLifecycle(initialValue = 1.0f)
 
-    // --- ViewModel States ---
     val githubToken by viewModel.githubToken.collectAsStateWithLifecycle()
 
-    // --- UI States (Temporary holders) ---
+    // --- UI 状態 ---
     var selected by remember(languageTag) { mutableStateOf(languageTag) }
     var tempScale by rememberSaveable(editorFontScale) { mutableFloatStateOf(editorFontScale) }
     var tempToken by remember(githubToken) { mutableStateOf(githubToken) }
+    var isTokenVisible by remember { mutableStateOf(false) }
 
-    val scope = rememberCoroutineScope()
+    // --- 生体認証処理 ---
+    val authenticate: () -> Unit = {
+        activity?.let {
+            val executor: Executor = ContextCompat.getMainExecutor(it)
+            val biometricPrompt = BiometricPrompt(it, executor,
+                object : BiometricPrompt.AuthenticationCallback() {
+                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                        super.onAuthenticationSucceeded(result)
+                        isTokenVisible = true
+                    }
+                })
+
+            val promptInfo = BiometricPrompt.PromptInfo.Builder()
+                .setTitle("SECURITY_VERIFICATION")
+                .setSubtitle("Authenticate to reveal sensitive data")
+                .setNegativeButtonText(it.getString(android.R.string.cancel))
+                .build()
+
+            biometricPrompt.authenticate(promptInfo)
+        }
+    }
 
     val backgroundBrush = remember {
         Brush.verticalGradient(
@@ -118,6 +109,7 @@ fun SettingsScreen(
     ) {
         Scaffold(
             containerColor = Color.Transparent,
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             topBar = {
                 TopAppBar(
@@ -125,7 +117,7 @@ fun SettingsScreen(
                         Text(
                             "SYSTEM_CONFIG",
                             style = MaterialTheme.typography.titleMedium.copy(
-                                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                                fontFamily = FontFamily.Monospace,
                                 fontWeight = FontWeight.Bold,
                             ),
                         )
@@ -146,29 +138,25 @@ fun SettingsScreen(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
-                // ===== 言語設定セクション =====
+                // ===== 言語設定 =====
                 SettingsGlassCard {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         SectionHeader(title = "LANGUAGE_SETTINGS")
-                        LanguageOptionRow(
-                            selected = selected == "",
-                            label = stringResource(R.string.pref_language_system),
-                            onClick = { selected = "" },
-                        )
-                        LanguageOptionRow(
-                            selected = selected == "ja",
-                            label = stringResource(R.string.pref_language_ja),
-                            onClick = { selected = "ja" },
-                        )
-                        LanguageOptionRow(
-                            selected = selected == "en",
-                            label = stringResource(R.string.pref_language_en),
-                            onClick = { selected = "en" },
-                        )
+                        listOf(
+                            "" to R.string.pref_language_system,
+                            "ja" to R.string.pref_language_ja,
+                            "en" to R.string.pref_language_en
+                        ).forEach { (code, resId) ->
+                            LanguageOptionRow(
+                                selected = selected == code,
+                                label = stringResource(resId),
+                                onClick = { selected = code },
+                            )
+                        }
                     }
                 }
 
-                // ===== エディタ外観セクション =====
+                // ===== エディタ外観 =====
                 SettingsGlassCard {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         SectionHeader(title = "EDITOR_APPEARANCE")
@@ -185,7 +173,7 @@ fun SettingsScreen(
                             Text(
                                 text = "${(tempScale * 100).toInt()}%",
                                 style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                                    fontFamily = FontFamily.Monospace,
                                     fontWeight = FontWeight.Bold,
                                 ),
                                 color = IceCyan,
@@ -206,7 +194,7 @@ fun SettingsScreen(
                     }
                 }
 
-                // ===== GitHub連携セクション =====
+                // ===== GitHub連携 (Secure) =====
                 SettingsGlassCard {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         SectionHeader(title = "GITHUB_INTEGRATION")
@@ -225,7 +213,18 @@ fun SettingsScreen(
                             },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            visualTransformation = PasswordVisualTransformation(),
+                            visualTransformation = if (isTokenVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailingIcon = {
+                                IconButton(onClick = {
+                                    if (isTokenVisible) isTokenVisible = false else authenticate()
+                                }) {
+                                    Icon(
+                                        imageVector = if (isTokenVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                        contentDescription = "Toggle Visibility",
+                                        tint = IceCyan
+                                    )
+                                }
+                            },
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedTextColor = IceTextPrimary,
                                 unfocusedTextColor = IceTextPrimary,
@@ -236,7 +235,7 @@ fun SettingsScreen(
                                 unfocusedContainerColor = Color.Transparent,
                             ),
                             textStyle = MaterialTheme.typography.bodyMedium.copy(
-                                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                                fontFamily = FontFamily.Monospace,
                             ),
                         )
                     }
@@ -263,15 +262,15 @@ fun SettingsScreen(
                             scope.launch {
                                 if (selected != languageTag) {
                                     AppLocaleManager.setLanguage(ctx, selected)
-                                    activity?.recreate()
+                                    (ctx as? Activity)?.recreate()
                                 }
                                 if (abs(tempScale - editorFontScale) > 0.0001f) {
                                     AppLocaleManager.setEditorFontScale(ctx, tempScale)
                                 }
-                                // ViewModel を介してトークンを保存
                                 if (tempToken != githubToken) {
                                     viewModel.updateGithubToken(tempToken)
                                 }
+                                snackbarHostState.showSnackbar("SYSTEM_UPDATED: Changes applied securely.")
                             }
                         },
                         enabled = (selected != languageTag) || (abs(tempScale - editorFontScale) > 0.0001f) || (tempToken != githubToken),
@@ -318,7 +317,7 @@ private fun SectionHeader(title: String) {
         Text(
             text = title,
             style = MaterialTheme.typography.labelMedium.copy(
-                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                fontFamily = FontFamily.Monospace,
                 letterSpacing = 2.sp,
             ),
             color = IceTextSecondary,
