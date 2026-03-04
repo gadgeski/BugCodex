@@ -8,16 +8,54 @@ import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +77,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gadgeski.bugcodex.R
 import com.gadgeski.bugcodex.core.AppLocaleManager
 import com.gadgeski.bugcodex.ui.SettingsViewModel
-import com.gadgeski.bugcodex.ui.theme.*
+import com.gadgeski.bugcodex.ui.theme.IceCyan
+import com.gadgeski.bugcodex.ui.theme.IceDeepNavy
+import com.gadgeski.bugcodex.ui.theme.IceGlassBorder
+import com.gadgeski.bugcodex.ui.theme.IceGlassSurface
+import com.gadgeski.bugcodex.ui.theme.IceHorizon
+import com.gadgeski.bugcodex.ui.theme.IceSilver
+import com.gadgeski.bugcodex.ui.theme.IceSlate
+import com.gadgeski.bugcodex.ui.theme.IceTextPrimary
+import com.gadgeski.bugcodex.ui.theme.IceTextSecondary
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 import kotlin.math.abs
@@ -51,7 +97,7 @@ import kotlin.math.abs
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit = {},
-    viewModel: SettingsViewModel = hiltViewModel()
+    viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val ctx = LocalContext.current
     // BiometricPrompt には FragmentActivity が必須。MainActivity が継承している必要があります。
@@ -78,13 +124,16 @@ fun SettingsScreen(
     val authenticate: () -> Unit = {
         activity?.let {
             val executor: Executor = ContextCompat.getMainExecutor(it)
-            val biometricPrompt = BiometricPrompt(it, executor,
+            val biometricPrompt = BiometricPrompt(
+                it,
+                executor,
                 object : BiometricPrompt.AuthenticationCallback() {
                     override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                         super.onAuthenticationSucceeded(result)
                         isTokenVisible = true
                     }
-                })
+                },
+            )
 
             val promptInfo = BiometricPrompt.PromptInfo.Builder()
                 .setTitle("SECURITY_VERIFICATION")
@@ -145,7 +194,7 @@ fun SettingsScreen(
                         listOf(
                             "" to R.string.pref_language_system,
                             "ja" to R.string.pref_language_ja,
-                            "en" to R.string.pref_language_en
+                            "en" to R.string.pref_language_en,
                         ).forEach { (code, resId) ->
                             LanguageOptionRow(
                                 selected = selected == code,
@@ -221,7 +270,7 @@ fun SettingsScreen(
                                     Icon(
                                         imageVector = if (isTokenVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                                         contentDescription = "Toggle Visibility",
-                                        tint = IceCyan
+                                        tint = IceCyan,
                                     )
                                 }
                             },
